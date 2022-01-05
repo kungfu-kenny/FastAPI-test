@@ -1,0 +1,45 @@
+version: '3.6'
+
+volumes:
+    hello:
+      driver: local
+
+services:
+  webservice:
+    environment:
+      PORT: 8000
+      
+      POSTGRES_USER: test
+      POSTGRES_HOST: db
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+      POSTGRES_PORT: 5432
+    
+      SLACK_TOKEN: your token
+      SLACK_CHANNEL: your channel
+      SLACK_USERNAME: your username
+
+      ENC_SALT: your salt
+      ENC_KEY: your key
+    networks:
+      - default
+    ports:
+      - 8000:8000
+    # restart: always
+    build: ./webservice
+    depends_on:
+      - db
+    
+  db:
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    networks:
+      - default
+    ports:
+      - 5432:5432
+    # restart: always
+    image: postgres:latest
+    volumes:
+      - hello:/var/lib/postgresql/data
