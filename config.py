@@ -4,15 +4,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class SlackSender:
-    slack_token = os.getenv("SLACK_TOKEN")#'xoxb-2907062956292-2904535298870-4CIfH7c3tdFlM4mptCrKTMmo'
-    slack_channel = os.getenv("SLACK_CHANNEL")#'#general'
-    slack_username = os.getenv("SLACK_USERNAME")#'test_username'
+    slack_token = os.getenv("SLACK_TOKEN")
+    slack_channel = os.getenv("SLACK_CHANNEL")
+    slack_username = os.getenv("SLACK_USERNAME")
     slack_link = 'https://slack.com/api/chat.postMessage'
 
 class Routes:
     route_main = '/'
     route_check_records = '/some_url/get_records'
     route_add_record = '/some_url/server_event'
+
+class GoogleCloudConfig:
+    gcp_project_id = os.getenv('GCP_PROJECT_ID')
+    gcp_topic_id = os.getenv('GCP_TOPIC_ID')
+    # os.environ['GOOGLE_APPLICATION_CREDENTIALS']='your json value of it'
 
 class WebServer:
     host = '0.0.0.0'
@@ -28,8 +33,8 @@ class PostgreSQL:
     default = ''.join(['sqlite:///', os.path.join(os.getcwd(), 'db.sqlite')])
 
 class EncryptionData:
-    salt = os.getenv('ENC_SALT').encode()#b'\xe4\x11\x17\xef\x99NF\x84fa\x06GwL*\x02'
-    secret_key = os.getenv('ENC_KEY').encode()#b'KS8PNqbGZ4LBzWRDPHBNPIHxSYh8kdHaVu7F4xSSP7g='
+    salt = os.getenv('ENC_SALT').encode()
+    secret_key = os.getenv('ENC_KEY').encode()
 
 class DescriptionBasics:
     key_add = "query" 
