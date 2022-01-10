@@ -1,5 +1,5 @@
 from google.cloud import pubsub_v1
-from config import GoogleCloudConfig
+from config import GoogleCloudConfig, DefaultValues
 
 
 class DataSending:
@@ -26,6 +26,18 @@ class DataSending:
             "comment":value_dict.comment, 
             **kwargs}).encode('UTF-8')
 
+    @staticmethod
+    def check_inserted_data(kwargs:dict) -> dict:
+        """
+        Static method which is dedicated to work with the removing values
+        Input:  kwargs = arguments which were inserted
+        Output: we removed values of the inserted default keys
+        """
+        for key, value in DefaultValues.value_check.items():
+            if kwargs.get(key) == value:
+                kwargs.pop(key)
+        return kwargs
+
     def send_message_gcp(self, value_dict:dict, **kwargs:dict) -> None:
         """
         Method which is dedicated to develop values
@@ -33,10 +45,12 @@ class DataSending:
                 kwargs = all other arguments from the link
         Output: we developed values to it
         """
-        return self.publisher.publish(
-            self.topic_path, 
-            self.develop_message_json(
+        value_send = self.develop_message_json(
                 value_dict, 
-                kwargs),
-            origin="python-sample", 
-            username="gcp")
+                self.check_inserted_data(kwargs))
+        if value_send:
+            return self.publisher.publish(
+                self.topic_path, 
+                value_send,
+                origin="python-sample", 
+                username="gcp")

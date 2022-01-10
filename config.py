@@ -17,12 +17,23 @@ class Routes:
 class GoogleCloudConfig:
     gcp_project_id = os.getenv('GCP_PROJECT_ID')
     gcp_topic_id = os.getenv('GCP_TOPIC_ID')
-    # os.environ['GOOGLE_APPLICATION_CREDENTIALS']='your json value of it'
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS']=os.getenv('GOOGLE_JSON')
 
 class WebServer:
     host = '0.0.0.0'
     port = os.getenv('PORT')
 
+class DefaultValues:
+    app_id = ''
+    account_id = 0
+    session_id = 0
+    signature = ''
+    value_check = {
+        'app_id': app_id, 
+        'account_id': account_id, 
+        'session_id': session_id
+        }
+    
 class PostgreSQL:
     db = os.getenv('POSTGRES_DB')
     host = os.getenv('POSTGRES_HOST')

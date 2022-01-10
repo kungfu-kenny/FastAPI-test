@@ -15,7 +15,7 @@ ENV ENC_KEY='your key'
 
 ENV GCP_PROJECT_ID='id of your object'
 ENV GCP_TOPIC_ID='topic of the id'
-ENV GOOGLE_APPLICATION_CREDENTIALS='your json value of it'
+ENV GOOGLE_JSON='your json value of it'
 
 RUN pip install -r requirements.txt
 CMD ["python3","start.py"]
