@@ -13,6 +13,7 @@ class Routes:
     route_main = '/'
     route_check_records = '/some_url/get_records'
     route_add_record = '/some_url/server_event'
+    route_start_test = '/start_test'
 
 class GoogleCloudConfig:
     gcp_project_id = os.getenv('GCP_PROJECT_ID')
@@ -24,6 +25,10 @@ class WebServer:
     port = os.getenv('PORT')
 
 class DefaultValues:
+    event = ''
+    character_id = ''
+    number = 5
+    comment = ''
     app_id = ''
     account_id = 0
     session_id = 0
@@ -31,9 +36,22 @@ class DefaultValues:
     value_check = {
         'app_id': app_id, 
         'account_id': account_id, 
-        'session_id': session_id
+        'session_id': session_id,
+        'comment': comment
         }
     
+class RandomValues:
+    random_query = {
+        "app_id": [str, 16],
+        "account_id": [int, 100000],
+        "session_id": [int, 50000]
+    }
+    random_parameter = {
+        "event": [str, 25],
+        "character_id": [str, 25],
+        "comment": [str, 50]
+    }
+
 class PostgreSQL:
     db = os.getenv('POSTGRES_DB')
     host = os.getenv('POSTGRES_HOST')

@@ -4,7 +4,7 @@ from pprint import pprint
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from config import EncryptionData
+from config import EncryptionData, DefaultValues
 
 
 class Encryption:
@@ -40,13 +40,16 @@ class Encryption:
         return pwd_to_decrypt.decode()
 
     @staticmethod
-    def make_string_encoded(value_dict:dict) -> str:
+    def make_string_encoded(value_dict:object, value_check:bool=False) -> str:
         """
         Static method which is dedicated to work with the 
-        Input:  value_dict = dictionary values which would be inserted
+        Input:  value_dict = fastapi object values which would be inserted
         Output: we developed value of the string to work with
         """
-        return f"event:{value_dict.event}|character_id:{value_dict.character_id}"
+        if not value_check:
+            return f"event:{value_dict.event}|character_id:{value_dict.character_id}"
+        return f"event:{value_dict.get('event', DefaultValues.event)}|"\
+            f"character_id:{value_dict.get('character_id', DefaultValues.character_id)}"
 
     @staticmethod
     def add_salt() -> str:
