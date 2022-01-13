@@ -1,8 +1,11 @@
 from pprint import pprint
 import requests
+from slack import WebClient
+from slack.errors import SlackApiError
 from datetime import datetime
 from utilities.make_encryption import Encryption
 from config import SlackSender
+
 
 class SlackOperator:
     """
@@ -11,6 +14,7 @@ class SlackOperator:
     def __init__(self, received_post:dict, signature:str) -> None:
         self.received_post = received_post
         self.signature = signature
+        self.client = WebClient(token=SlackSender.slack_token)
 
     def check_input_json(self) -> bool:
         """
@@ -20,8 +24,8 @@ class SlackOperator:
         """
         try:
             return Encryption().decrypt(self.signature) == \
-                Encryption().make_string_encoded(self.received_post)
-        except Exception as e:
+                Encryption().make_string_encoded(self.received_post, True)
+        except Exception:
             return False
 
     @staticmethod
@@ -43,20 +47,41 @@ class SlackOperator:
         """
         return datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%M")
 
+    def develop_message_json_sdk(self) -> object:
+        """
+        Method which is dedicated to develop message for the 
+        Input:  None
+        Output: we developed message via the sdk
+        """
+        try:
+            return self.client.chat_postMessage(
+                channel = SlackSender.slack_channel,
+                text = self.develop_message_sending(
+                        f'{self.received_post}|{self.signature}', 
+                        self.develop_datetime_sending()
+                    ),
+                user=SlackSender.slack_username
+                )
+        except SlackApiError as e:
+            return e.response["error"]
+
     def develop_message_json(self) -> object:
         """
         Method which is dedicated to develop the json sending the message
         Input:  all presented values
         Output: we returned sending messages 
         """
-        return requests.post(
-            SlackSender.slack_link,
-            {
-                'token': SlackSender.slack_token,
-                'channel': SlackSender.slack_channel,
-                'text': self.develop_message_sending(
-                    f'{self.received_post}|{self.signature}', 
-                    self.develop_datetime_sending()),
-                'username': SlackSender.slack_username
-            }
-        ).json()
+        try:
+            return requests.post(
+                SlackSender.slack_link,
+                {
+                    'token': SlackSender.slack_token,
+                    'channel': SlackSender.slack_channel,
+                    'text': self.develop_message_sending(
+                        f'{self.received_post}|{self.signature}', 
+                        self.develop_datetime_sending()),
+                    'username': SlackSender.slack_username
+                }
+            ).json()
+        except Exception as e:
+            return e

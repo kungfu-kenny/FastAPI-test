@@ -21,9 +21,10 @@ class DataSending:
         Output: one dictionary from the several elements
         """
         return str({
-            'event':value_dict.event, 
-            "character_id":value_dict.character_id, 
-            "comment":value_dict.comment, 
+            # 'event':value_dict.event, 
+            # "character_id":value_dict.character_id, 
+            # "comment":value_dict.comment, 
+            **value_dict,
             **kwargs}).encode('UTF-8')
 
     @staticmethod

@@ -48,8 +48,7 @@ class Encryption:
         """
         if not value_check:
             return f"event:{value_dict.event}|character_id:{value_dict.character_id}"
-        return f"event:{value_dict.get('event', DefaultValues.event)}|"\
-            f"character_id:{value_dict.get('character_id', DefaultValues.character_id)}"
+        return str(value_dict)
 
     @staticmethod
     def add_salt() -> str:
