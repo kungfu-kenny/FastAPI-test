@@ -22,7 +22,7 @@ class DataTestOccupy:
         Output: values of the selected values from the text selected data
         """
         with open(os.path.join(GoogleCloudConfig.data_path, file_name), 'r') as new_random_file:
-            data_sent = new_random_file.readlines()
+            data_sent = new_random_file.readlines(GoogleCloudConfig.data_length)
         if value_bool:
             return [json.loads(f) for f in data_sent]
         return [

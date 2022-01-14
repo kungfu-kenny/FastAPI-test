@@ -1,18 +1,24 @@
 from unittest import TestCase
-from fastapi.testclient import TestClient
-# from memory_profiler import memory_usage, profile
-from app.app import app
-from tests.data_test_occupier import DataTestOccupy
-from tests.data_test_sender import DataTestSender
-from config import DefaultValues
+from start_profile import DataTestProfiler
+from config import DescriptionBasics
 
 
 class TestMainModule(TestCase):
     """
-    class which is dedicated to develop
+    class which is dedicated to develop tests for the main module
     """
     def setUp(self):
-        self.test_client_app = TestClient(app)
+        self.data_profile = DataTestProfiler()
+        
+    def test_the_gretings(self):
+        """
+        Method which is dedicated to test basic values of the connection to the server
+        Input:  None
+        Output: we developed work of the api
+        """
+        response = self.data_profile.return_values_intro()
+        assert response.status_code == 200
+        assert response.json() == {DescriptionBasics.key: DescriptionBasics.value}
 
     def test_random_value(self):
         """
@@ -20,10 +26,8 @@ class TestMainModule(TestCase):
         Input:  None
         Output: we developed basic test values for all of it
         """
-        value_result = DataTestSender(
-            DefaultValues.number).produce_test_requests_result()
-        for value in value_result:
-            assert value.get('status', 400) == 201
+        value_status_code = self.data_profile.return_values_random()
+        assert len(set(value_status_code)) == 1 and value_status_code[0] == 201
         
     def test_random_value_failed(self):
         """
@@ -31,41 +35,21 @@ class TestMainModule(TestCase):
         Input:  All randomly created values from the code
         Output: we developed the values of the 
         """
-        value_result = DataTestSender(
-            DefaultValues.number).produce_test_requests_result(False)
-        for value in value_result:
-            assert value.get('status', 201) == 200
+        value_status_code = self.data_profile.return_values_random_failed()
+        assert len(set(value_status_code)) == 1 and value_status_code[0] == 200
 
     def test_random_file(self):
         """
         Test which is dedicated to develop the values based on the file system values
         Input:  All randomly chosen values from the files
-        Output: we used values from the 
+        Output: we made values from the random files
         """
-        value_result = []
-        occupy = DataTestOccupy()
-        for occupied_file in occupy.return_random_data():
-            value_result.append(DataTestSender().produce_test_requests_checking(
-                    occupy.get_data_basic(occupied_file), 
-                    True
-                )
-            )
-        for value in value_result:
-            assert value.get('success', False) == True
+        assert all(self.data_profile.return_values_random_file()) == True
 
     def test_random_file_failed(self):
         """
         Test which is dedicated to develop the values based on the file system values
         Input:  All randomly chosen values from the files
-        Output: we used values from the 
+        Output: we used values from the random files which all are failed
         """
-        value_result = []
-        occupy = DataTestOccupy()
-        for occupied_file in occupy.return_random_data(False):
-            value_result.append(DataTestSender().produce_test_requests_checking(
-                    occupy.get_data_basic(occupied_file), 
-                    False
-                )
-            )
-        for value in value_result:
-            assert value.get('failture', False) == True
+        assert all(self.data_profile.return_values_random_file_failed()) == True

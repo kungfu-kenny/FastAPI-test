@@ -1,5 +1,4 @@
 import requests
-from pprint import pprint
 from utilities.make_encryption import Encryption
 from utilities.check_testings import TestingCreation
 from config import Routes, WebServer
@@ -12,7 +11,7 @@ class DataTestSender:
     def __init__(self, number:int=0) -> None:
         self.encryption = Encryption()
         self.testing_requests = TestingCreation(number)
-        self.request_values = f"http://{WebServer.host}:{WebServer.port}{Routes.route_add_record}"
+        self.request_values = f"http://{WebServer.host}:{WebServer.port}"
 
     def produce_test_requests_result(self, success:bool=True) -> list:
         """
@@ -66,16 +65,25 @@ class DataTestSender:
             dictionary_results.get(value_status_count, 0) == len(request_result)
         return dictionary_results
 
+    @staticmethod
+    def build_link_params(value_dict:dict) -> str:
+        """
+        Static method which is dedicated to make the parameters for the link
+        Input:  value_dict = dictionary with the params
+        Output: string for the routes
+        """
+        request_value_str = '&'.join([f"{k}={v}" for k, v in value_dict.items()])
+        if not request_value_str:
+            return Routes.route_add_record
+        return f"{Routes.route_add_record}?{request_value_str}"
+
     def build_link(self, value_dict:dict) -> str:
         """
         Method which is dedicated to work with the new link
         Input:  value_dict = dictionary with the returned values
-        Output:             
+        Output: we developed link for the requests
         """
-        request_value_str = '&'.join([f"{k}={v}" for k, v in value_dict.items()])
-        if not request_value_str:
-            return self.request_values
-        return f"{self.request_values}?{request_value_str}"
+        return f"{self.request_values}{self.build_link_params(value_dict)}"
 
     def produce_test_requests_values(self, params:dict, jso:dict) -> object:
         """

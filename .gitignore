@@ -1,6 +1,8 @@
-
+*.dat
 test.txt
 db.sqlite
+prof
+profile
 principal-iris-337317-18e16ba55e90.json
 # Created by https://www.toptal.com/developers/gitignore/api/python,flask
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,flask

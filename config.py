@@ -25,19 +25,18 @@ class GoogleCloudConfig:
     gcp_topic_id = 'test-topic'#os.getenv('GCP_TOPIC_ID')
     data_path = '/home/cmdb-123851/Downloads/01'#os.getenv('DATA_PATH')
     data_wait = 10
-    data_chunk = 10
-    data_length = 10
-   
-
+    data_chunk = 100
+    data_length = 500
 
 class WebServer:
     host = '0.0.0.0'
     port = 8000#os.getenv('PORT')
 
 class DefaultValues:
+    profiler_dat = 'profiler_info.dat'
     event = ''
     character_id = ''
-    number = 5
+    number = 200
     comment = ''
     appId = ''
     accountId = 0
