@@ -99,6 +99,28 @@ class DataTestSender:
             json=jso,
             verify=False)
 
+    def develop_signature_random(self, params:dict, jso:dict, success:bool=True) -> dict:
+        """
+        Method which is dedicated to develop signature
+        Input:  params = parameter values
+                jso = json values to the route
+                success = boolean value to the success
+        Output: we changed the dictionary
+        """
+        if success:
+            params.update({
+                "signature": self.encryption.encrypt(
+                    self.encryption.make_string_encoded(
+                        jso, 
+                        True)
+                    )
+                })
+        else:
+            params.update({
+                "signature": self.testing_requests.return_random_string(50)
+            })
+        return params
+
     def produce_test_requests(self, success:bool=True, value_results:list = []) -> list:
         """
         Method which is dedicated to work with test requests
@@ -108,19 +130,15 @@ class DataTestSender:
         """
         if not value_results:
             value_results = self.testing_requests.develop_all_query_parameters()
-        for params, jso in value_results:
-            if success:
-                params.update({
-                    "signature": self.encryption.encrypt(
-                        self.encryption.make_string_encoded(
-                            jso, 
-                            True)
-                        )
-                    })
-            else:
-                params.update({
-                    "signature": self.testing_requests.return_random_string(50)
-                })
-
-        return [self.produce_test_requests_values(params, jso)
-                for params, jso in value_results], value_results
+        
+        return [
+            self.produce_test_requests_values(
+                self.develop_signature_random(
+                    params, 
+                    jso, 
+                    success
+                    ),
+                jso
+            )
+            for params, jso in value_results
+        ], value_results

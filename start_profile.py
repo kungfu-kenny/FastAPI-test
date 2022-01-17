@@ -7,6 +7,7 @@ from tests.data_test_sender import DataTestSender
 from utilities.make_encryption import Encryption
 from config import DefaultValues, Routes
 
+
 fp=open(DefaultValues.profiler_dat, 'w+')
 
 class DataTestProfiler:
@@ -18,6 +19,8 @@ class DataTestProfiler:
         self.encryption = Encryption()
         self.occupy = DataTestOccupy()
         self.data_sender = DataTestSender(DefaultValues.number)
+        self.value_used_file = self.occupy.return_random_data(True, True)
+        self.value_used = self.data_sender.testing_requests.develop_all_query_parameters()
 
     def return_values_intro(self) -> object:
         """
@@ -34,8 +37,7 @@ class DataTestProfiler:
         Output: we developed values for the updated
         """
         value_status_code = []
-        value_results = self.data_sender.testing_requests.develop_all_query_parameters()
-        for params, jso in value_results:
+        for params, jso in self.value_used:
             params.update({
                 "signature": self.encryption.encrypt(
                     self.encryption.make_string_encoded(
@@ -43,7 +45,7 @@ class DataTestProfiler:
                         True)
                     )
                 })
-        for params, jso in value_results:
+
             value_status_code.append(
                 self.client.post(
                     self.data_sender.build_link_params(
@@ -61,12 +63,11 @@ class DataTestProfiler:
         Output: we make values which were previously failed to work with
         """
         value_status_code = []
-        value_results = self.data_sender.testing_requests.develop_all_query_parameters()
-        for params, jso in value_results:
+        for params, jso in self.value_used:
             params.update({
                     "signature": self.data_sender.testing_requests.return_random_string(50)
                 })
-        for params, jso in value_results:
+
             value_status_code.append(
                 self.client.post(
                     self.data_sender.build_link_params(
@@ -84,7 +85,7 @@ class DataTestProfiler:
         Output: we took values of files from the file system
         """
         value_result = []
-        for chunk in self.occupy.return_random_data():
+        for chunk in self.value_used_file:
             value_result_chunk = []
             for params, jso in chunk:
                 value_result_chunk.append(
@@ -105,7 +106,7 @@ class DataTestProfiler:
         Method which is dedicated to get values from the 
         """
         value_result = []
-        for chunk in self.occupy.return_random_data(False):
+        for chunk in self.value_used_file:
             value_result_chunk = []
             for params, jso in chunk:
                 value_result_chunk.append(
@@ -130,7 +131,15 @@ class DataTestProfiler:
         """
         self.return_values_random()
         self.return_values_random_failed()
+        
         self.return_values_random_file()
+
+        self.value_used_file = self.occupy.update_redeveloped_files(
+            self.value_used_file, 
+            False, 
+            True
+        )
+        
         self.return_values_random_file_failed()
 
 
