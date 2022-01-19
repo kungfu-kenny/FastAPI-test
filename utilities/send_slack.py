@@ -1,7 +1,7 @@
 from pprint import pprint
 import requests
-from slack import WebClient
-from slack.errors import SlackApiError
+# from slackclient import WebClient
+# from slack.errors import SlackApiError
 from datetime import datetime
 from utilities.make_encryption import Encryption
 from config import SlackSender
@@ -14,7 +14,7 @@ class SlackOperator:
     def __init__(self, received_post:dict, signature:str) -> None:
         self.received_post = received_post
         self.signature = signature
-        self.client = WebClient(token=SlackSender.slack_token)
+        # self.client = WebClient(token=SlackSender.slack_token)
 
     def check_input_json(self) -> bool:
         """
